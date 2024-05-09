@@ -84,15 +84,12 @@ do
 			OIFS="$IFS"
 			PS3="Enter your team number : "
 			IFS=":"
-			select var in  $( echo | cat $1 | sed '1d'  | awk -F, '{print$1":"}'| tr -d "\n" ; echo "quit" )
+			select var in  $( cat $1 | sed '1d'  | awk -F, '{print$1":"}'| tr -d "\n" )
 			
 			do
-				if [ "$var" = "quit" ];
-				then
-					break
-				fi
-				
-				cat $3 | awk -F, '{print $5-$6, $0}' | sort -t, -nr -k 1| cut -d' ' -f2- | awk -F, -v a=$var  '$3==a{printf("\n%s\n%s %d vs %d %s\n",$1,$3,$5,$6,$4)}' 
+				val=$(cat $3 | awk -F, -v c=$var '$3==c&&$5>$6{print $5-$6, $0}' | sort -t, -nr -k 1 | head -n 1 |awk '{print$1}')
+			        cat $3 | awk -F, '{print $5-$6, $0}' | sort -nr -k 1| awk -v b=$val '$1==b{print}' | cut -d' ' -f2- | sort -n -k 3 | sort -n -k 2 | awk -F, -v a=$var  '$3==a{printf("\n%s\n%s %d vs %d %s\n\n",$1,$3,$5,$6,$4)}'
+				break;
 			done	
 			IFS="$OIFS"
 			;;

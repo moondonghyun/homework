@@ -94,6 +94,7 @@ do
 			IFS="$OIFS"
 			;;
 		7 )
+			echo "bye!"
 			break;;
 	esac
 done
